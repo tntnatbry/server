@@ -130,6 +130,7 @@ extern const char* wsrep_provider_vendor;
 
 int  wsrep_show_status(THD *thd, SHOW_VAR *var, char *buff,
                        enum enum_var_type scope);
+int  wsrep_show_ready(THD *thd, SHOW_VAR *var, char *buff);
 int  wsrep_init();
 void wsrep_deinit(bool free_options);
 
@@ -234,6 +235,7 @@ extern wsrep_seqno_t wsrep_locked_seqno;
 
 #define WSREP_QUERY(thd) (thd->query())
 
+extern my_bool wsrep_ready_get();
 extern void wsrep_ready_wait();
 
 class Ha_trx_info;

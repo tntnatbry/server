@@ -46,7 +46,7 @@ while($run)
   exec $MYSQL --user=root --host=127.0.0.1 --port=$NODE_MYPORT_1 test \
          < $MYSQLTEST_VARDIR/tmp/galera_concurrent.sql & \
        $MYSQL --user=root --host=127.0.0.1 --port=$NODE_MYPORT_2 test \
-         < $MYSQLTEST_VARDIR/tmp/galera_concurrent.sql;
+    < $MYSQLTEST_VARDIR/tmp/galera_concurrent.sql;
   dec $run;
 }
 

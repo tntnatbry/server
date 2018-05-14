@@ -4891,12 +4891,19 @@ static Sys_var_mybool Sys_wsrep_sst_donor_rejects_queries(
        GLOBAL_VAR(wsrep_sst_donor_rejects_queries), 
        CMD_LINE(OPT_ARG), DEFAULT(FALSE));
 
+static bool wsrep_on_check_super(sys_var *self, THD* thd, set_var *var)
+{
+  if (check_has_super(self, thd, var))
+    return true;
+  return (wsrep_on_check(self, thd, var));
+}
+
 static Sys_var_mybool Sys_wsrep_on (
        "wsrep_on", "To enable wsrep replication ",
        SESSION_VAR(wsrep_on), 
        CMD_LINE(OPT_ARG), DEFAULT(FALSE),
        NO_MUTEX_GUARD, NOT_IN_BINLOG,
-       ON_CHECK(wsrep_on_check),
+       ON_CHECK(wsrep_on_check_super),
        ON_UPDATE(wsrep_on_update));
 
 static Sys_var_charptr Sys_wsrep_start_position (
@@ -4942,8 +4949,8 @@ static Sys_var_mybool Sys_wsrep_causal_reads(
 static Sys_var_uint Sys_wsrep_sync_wait(
        "wsrep_sync_wait", "Ensure \"synchronous\" read view before executing "
        "an operation of the type specified by bitmask: 1 - READ(includes "
-       "SELECT, SHOW and BEGIN/START TRANSACTION); 2 - UPDATE and DELETE; 4 - "
-       "INSERT and REPLACE",
+       "SELECT and BEGIN/START TRANSACTION); 2 - UPDATE and DELETE; 4 - "
+       "INSERT and REPLACE; 8 - SHOW",
        SESSION_VAR(wsrep_sync_wait), CMD_LINE(OPT_ARG, OPT_WSREP_SYNC_WAIT),
        VALID_RANGE(WSREP_SYNC_WAIT_NONE, WSREP_SYNC_WAIT_MAX),
        DEFAULT(WSREP_SYNC_WAIT_NONE), BLOCK_SIZE(1),
